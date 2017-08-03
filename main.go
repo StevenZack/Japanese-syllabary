@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/gizak/termui"
+	"strconv"
 )
 
 func main() {
@@ -117,25 +118,44 @@ func main() {
 
 	p := termui.NewPar("ン")
 	p.Height = 3
-	p.Width = 20
+	p.Width = 40
 	c := make(chan bool, 1)
-	go func() {
-		for k, v := range data {
-			p.Text = k
-			termui.Render(p)
-			<-c
-			p.Text = k + "  " + v
-			termui.Render(p)
-			<-c
-		}
-		close(c)
-	}()
+	go circle(data, 0, p, c)
+
 	termui.Handle("/sys/kbd/q", func(termui.Event) {
 		termui.StopLoop()
 	})
 	termui.Handle("/sys/kbd/<space>", func(termui.Event) {
 		c <- true
 	})
+	termui.Handle("/sys/kbd/m", func(termui.Event) {
+		c <- false
+	})
 	termui.Render(p)
 	termui.Loop()
+}
+func circle(da map[string]string, round int, p *termui.Par, c chan bool) {
+	if len(da) < 1 {
+		p.Text = "恭喜你记忆完成，共计" + strconv.FormatInt(int64(round), 10) + "次循环"
+		termui.Render(p)
+		return
+	}
+	submap := make(map[string]string)
+	for k, v := range da {
+		p.Text = k
+		termui.Render(p)
+		c1 := <-c
+		p.Text = k + "  " + v
+		termui.Render(p)
+		c2 := <-c
+		if !c1 || !c2 {
+			submap[k] = v
+		}
+	}
+	p.Text = "第" + strconv.FormatInt(int64(round+1), 10) + "轮循环结束"
+	termui.Render(p)
+	<-c
+	circle(submap, round+1, p, c)
+	<-c
+	termui.StopLoop()
 }
