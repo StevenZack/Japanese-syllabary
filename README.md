@@ -7,5 +7,5 @@ Download releases <a href="https://github.com/StevenZack/Japanese-syllabary/rele
 # Usage
 <img src="https://github.com/StevenZack/Japanese-syllabary/blob/master/%E6%8D%95%E8%8E%B7.PNG?raw=true"/>
 <b>Press 'space' to skip to next </b><br>
-<b>Press 'q' to quit</b>
-<b>Press 'm' to mark unclear-memorized</b>
+<b>Press 'q' to quit</b><br>
+<b>Press 'm' to mark weak-memorized word</b>
